@@ -14,9 +14,7 @@ MCQSGraph createIncomeGraph(vector<StateChange> incomingVertexValueVector,
 		for (int i=0; i<incomingVertexValueVector.length(); i++){
 		        temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = incomingVertexValueVector[i];//переопредели оператор равно
-			boost::add_edge(temp_vertex, mainVertex, resultGraph); 
-			std::pair<Edge, bool> temp_edge = boost::edge(temp_vertex, mainVertex, resultGraph);
-		        boost::put(boost::edge_weight_t(), resultGraph, temp_edge.first, incomingEdgeValueVector[i]);
+			boost::add_edge(temp_vertex, mainVertex, incomingEdgeValueVector[i], resultGraph); 
 		}
 		return resultGraph
 	} else {
@@ -32,9 +30,7 @@ MCQSGraph createOutcomeGraph(vector<StateChange> incomingVertexValueVector,
 		for (int i=0; i<incomingVertexValueVector.length(); i++){
 		        temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = incomingVertexValueVector[i];//переопредели оператор равно
-			boost::add_edge(mainVertex, temp_vertex, resultGraph); 
-			std::pair<Edge, bool> temp_edge = boost::edge(mainVertex, temp_vertex, resultGraph);
-		        boost::put(boost::edge_weight_t(), resultGraph, temp_edge.first, incomingEdgeValueVector[i]);
+			boost::add_edge(mainVertex, temp_vertex, incomingEdgeValueVector[i], resultGraph); 
 		}
 		return resultGraph
 	} else {

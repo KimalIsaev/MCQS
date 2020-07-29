@@ -1,5 +1,0 @@
-#include "boost/graph/adjacency_list.hpp"
-#include "StateChange.h"
-typedef boost::adjacency_list<boost::listS, boost::listS,
-			      boost::bidirectionalS, Stat> MCCQSGraph;
-

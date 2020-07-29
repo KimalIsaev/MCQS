@@ -1,7 +1,7 @@
 #include "boost/graph/adjacency_list.hpp"
 #include "StateChange.h"
 #include <vector>
-#include "MCQSGraphProperty.h"
+#include "MCQSGraphProperty.h"//добавить библиотеку viennamath
 typedef boost::adjacency_list<boost::listS, boost::listS,
 			      boost::bidirectionalS, StateChange,
 			      ViennaMath::variable> MCCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь

@@ -1,0 +1,4 @@
+https://www.howtobuildsoftware.com/index.php/how-do/yhL/c-boost-graph-adding-a-vertex-index-to-lists-graph-on-the-fly-for-betweenness-centrality
+https://www.boost.org/doc/libs/1_73_0/libs/graph/example/edge_property.cpp
+https://theboostcpplibraries.com/boost.graph-vertices-and-edges
+http://viennamath.sourceforge.net/viennamath-manual-current.pdf

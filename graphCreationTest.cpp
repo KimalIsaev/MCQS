@@ -12,12 +12,12 @@ typedef boost::MCCQSGraph::vertex_descriptor MCCQSVertex_descriptor;
 
 std::pair<MCQSGraph, MCCQSVertex_descriptor>
 createIncomeGraph(vector<StateChange> &incomingVertexValueVector, 
-		  vector<ViennaMath::variable*> &incomingEdgeValueVector){
-	if (incomingVertexValueVector.length() == incomingEdgeValueVector.length){
+		  vector<viennamath::variable*> &incomingEdgeValueVector){
+	if (incomingVertexValueVector.length() == incomingEdgeValueVector.length()){
 		MCCQSGraph resultGraph;
-	        MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+	    MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
 		for (int i=0; i<incomingVertexValueVector.length(); i++){
-		        temp_vertex = boost::add_vertex(resultGraph);
+		    temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = incomingVertexValueVector[i];//переопредели оператор равно
 			boost::add_edge(temp_vertex, mainVertex, incomingEdgeValueVector[i], resultGraph); 
 		}
@@ -30,11 +30,11 @@ createIncomeGraph(vector<StateChange> &incomingVertexValueVector,
 std::pair<MCQSGraph, MCCQSVertex_descriptor>
 createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector, 
 		   vector<ViennaMath::variable*> &outcomingEdgeValueVector){
-	if (outcomingVertexValueVector.length() == outcomingEdgeValueVector.length){
+	if (outcomingVertexValueVector.length() == outcomingEdgeValueVector.length()){
 		MCCQSGraph resultGraph;
-	        MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+	    MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
 		for (int i=0; i<outcomingVertexValueVector.length(); i++){
-		        temp_vertex = boost::add_vertex(resultGraph);
+		    temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = outcomingVertexValueVector[i];//переопредели оператор равно
 			boost::add_edge(mainVertex, temp_vertex, outcomingEdgeValueVector[i], resultGraph); 
 		}

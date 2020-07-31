@@ -31,7 +31,7 @@ createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector,
 		   vector<viennamath::variable*> &outcomingEdgeValueVector){
 	if (outcomingVertexValueVector.size() == outcomingEdgeValueVector.size()){
 		MCQSGraph resultGraph;
-	    MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
 		for (int i=0; i<outcomingVertexValueVector.size(); i++){
 			MCQSVertex_descriptor temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = outcomingVertexValueVector[i];//переопредели оператор равно
@@ -44,23 +44,26 @@ createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector,
 }
 
 MCQSGraph connectTwoGraphsWithEdge(const MCQSGraph &g, MCQSVertex_descriptor connectFrom,
-				  const MCQSGraph &j, MCQSVertex_descriptor connectTo, viennamath::variable *edgeValue){
+				   const MCQSGraph &j, MCQSVertex_descriptor connectTo, viennamath::variable *edgeValue){
 	//https://stackoverflow.com/questions/18162187/merging-graphs-using-boost-graph
 	//всё сделано на основе этой ссылки, без понятия работает это или нет
 	typedef boost::property_map<MCQSGraph, boost::vertex_index_t>::type index_map_t;
 	typedef boost::iterator_property_map<typename std::vector<MCQSVertex_descriptor>::iterator,
 					     index_map_t, MCQSVertex_descriptor, MCQSVertex_descriptor&> IsoMap;
-	IsoMap mapG, mapJ;
+	vector<MCQSVertex_descriptor> orig2copy_data_of_g(boost::num_vertices(g));
+	vector<MCQSVertex_descriptor> orig2copy_data_of_j(boost::num_vertices(j));
+	IsoMap mapG = make_iterator_property_map(orig2copy_data_of_g.begin(), get(boost::vertex_index, g));
+	IsoMap mapJ = make_iterator_property_map(orig2copy_data_of_j.begin(), get(boost::vertex_index, j));
+        
 	MCQSGraph resultGraph;
 	boost::copy_graph(g, resultGraph, boost::orig_to_copy(mapG));
 	boost::copy_graph(j, resultGraph, boost::orig_to_copy(mapJ));
-    MCQSVertex_descriptor fromG = mapG[connectFrom];
+	MCQSVertex_descriptor fromG = mapG[connectFrom];
 	MCQSVertex_descriptor toJ = mapJ[connectTo];
 	boost::add_edge(fromG, toJ, edgeValue, resultGraph);//единица вместа переменной в качестве веса на ребре
 	return resultGraph;
 }
 
-//MCQSGraph createBasic_Flow_OneOrbit_Exuction(
 MCQSGraph createBattery(vector<StateChange> &incomingVertexValueVector, 
 			vector<viennamath::variable*> &incomingEdgeValueVector,
 			vector<StateChange> &outcomingVertexValueVector, 

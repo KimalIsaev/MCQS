@@ -50,11 +50,14 @@ MCQSGraph connectTwoGraphsWithEdge(const MCQSGraph &g, MCQSVertex_descriptor con
 	typedef boost::property_map<MCQSGraph, boost::vertex_index_t>::type index_map_t;
 	typedef boost::iterator_property_map<typename std::vector<MCQSVertex_descriptor>::iterator,
 					     index_map_t, MCQSVertex_descriptor, MCQSVertex_descriptor&> IsoMap;
-	vector<MCQSVertex_descriptor> orig2copy_data_of_g(boost::num_vertices(g));
-	vector<MCQSVertex_descriptor> orig2copy_data_of_j(boost::num_vertices(j));
-	IsoMap mapG = make_iterator_property_map(orig2copy_data_of_g.begin(), get(boost::vertex_index, g));
-	IsoMap mapJ = make_iterator_property_map(orig2copy_data_of_j.begin(), get(boost::vertex_index, j));
-        
+	//vector<MCQSVertex_descriptor> orig2copy_data_of_g(boost::num_vertices(g));
+	//vector<MCQSVertex_descriptor> orig2copy_data_of_j(boost::num_vertices(j));
+	//IsoMap mapG/* = make_iterator_property_map*/(orig2copy_data_of_g.begin());//, get(boost::vertex_index, g));
+	//IsoMap mapJ/* = make_iterator_property_map*/(orig2copy_data_of_j.begin());//, get(boost::vertex_index, j));
+	typedef std::map<MCQSVertex_descriptor, MCQSVertex_descriptor> MCQSVertex_map;
+	MCQSVertex_map vertexMapG, vertexMapJ;
+	boost::associative_property_map<MCQSVertex_map> mapG(vertexMapG);
+	boost::associative_property_map<MCQSVertex_map> mapJ(vertexMapJ);
 	MCQSGraph resultGraph;
 	boost::copy_graph(g, resultGraph, boost::orig_to_copy(mapG));
 	boost::copy_graph(j, resultGraph, boost::orig_to_copy(mapJ));

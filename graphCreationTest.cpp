@@ -7,7 +7,7 @@
 typedef boost::adjacency_list<boost::listS, boost::listS,
 			      boost::bidirectionalS, StateChange,
 			      viennamath::variable*> MCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь
-typedef MCQSGraph::vertex_descriptor MCQSVertex_descriptor;
+typedef boost::graph_traits<MCQSGraph>::vertex_descriptor MCQSVertex_descriptor;
 
 std::pair<MCQSGraph, MCQSVertex_descriptor>
 createIncomeGraph(vector<StateChange> &incomingVertexValueVector, 

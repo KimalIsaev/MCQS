@@ -23,3 +23,11 @@ bool StateChange::getExistance()
 {
 	return existence;
 }
+
+StateChange StateChange::operator=(StateChange newStateChange)
+{
+	existence = newStateChange.existence;
+	orbitChange = newStateChange.orbitChange;
+	phaseChange = newStateChange.phaseChange;
+	return *this;
+}

@@ -1,23 +1,22 @@
 #include "boost/graph/adjacency_list.hpp"
 #include "StateChange.h"
 #include <vector>
-#include "MCQSGraphProperty.h"//добавить библиотеку viennamath
 #include <utility>
 #include <boost/graph/copy.hpp>
 #include <viennamath/expression.hpp>
 typedef boost::adjacency_list<boost::listS, boost::listS,
 			      boost::bidirectionalS, StateChange,
-			      viennamath::variable*> MCCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь
-typedef boost::MCCQSGraph::vertex_descriptor MCCQSVertex_descriptor;
+			      viennamath::variable*> MCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь
+typedef MCQSGraph::vertex_descriptor MCQSVertex_descriptor;
 
-std::pair<MCQSGraph, MCCQSVertex_descriptor>
+std::pair<MCQSGraph, MCQSVertex_descriptor>
 createIncomeGraph(vector<StateChange> &incomingVertexValueVector, 
 		  vector<viennamath::variable*> &incomingEdgeValueVector){
-	if (incomingVertexValueVector.length() == incomingEdgeValueVector.length()){
-		MCCQSGraph resultGraph;
-	    MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+	if (incomingVertexValueVector.lenght() == incomingEdgeValueVector.length()){
+		MCQSGraph resultGraph;
+	    MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
 		for (int i=0; i<incomingVertexValueVector.length(); i++){
-		    temp_vertex = boost::add_vertex(resultGraph);
+			MCQSVertex_descriptor temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = incomingVertexValueVector[i];//переопредели оператор равно
 			boost::add_edge(temp_vertex, mainVertex, incomingEdgeValueVector[i], resultGraph); 
 		}
@@ -27,14 +26,14 @@ createIncomeGraph(vector<StateChange> &incomingVertexValueVector,
 	}									
 }
 
-std::pair<MCQSGraph, MCCQSVertex_descriptor>
+std::pair<MCQSGraph, MCQSVertex_descriptor>
 createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector, 
-		   vector<ViennaMath::variable*> &outcomingEdgeValueVector){
+		   vector<viennamath::variable*> &outcomingEdgeValueVector){
 	if (outcomingVertexValueVector.length() == outcomingEdgeValueVector.length()){
-		MCCQSGraph resultGraph;
-	    MCCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+		MCQSGraph resultGraph;
+	    MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
 		for (int i=0; i<outcomingVertexValueVector.length(); i++){
-		    temp_vertex = boost::add_vertex(resultGraph);
+			MCQSVertex_descriptor temp_vertex = boost::add_vertex(resultGraph);
 			resultGraph[temp_vertex] = outcomingVertexValueVector[i];//переопредели оператор равно
 			boost::add_edge(mainVertex, temp_vertex, outcomingEdgeValueVector[i], resultGraph); 
 		}
@@ -44,7 +43,7 @@ createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector,
 	}									
 }
 
-MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCCQSVertex_descriptor connectFrom,
+MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCQSVertex_descriptor connectFrom,
 				   MCQSGraph &j, MCCQSVertex_descriptor connectTo){
 	//https://stackoverflow.com/questions/18162187/merging-graphs-using-boost-graph
 	//всё сделано на основе этой ссылки, без понятия работает это или нет
@@ -72,6 +71,8 @@ MCQSGraph createBattery(vector<StateChange> &incomingVertexValueVector,
 										      outcomingEdgeValueVector);
 	return connectTwoGraphsWithEdge(incomeGraph.first, incomeGraph.second, outcomeGraph.first, outcomeGraph.second);
 }
+
+
 
 
 

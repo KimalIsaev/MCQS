@@ -38,3 +38,13 @@ StateChange& StateChange::operator=(const StateChange &newStateChange)
 	phaseChange = newStateChange.phaseChange;
 	return *this;
 }
+
+std::ostream& operator<<(std::ostream& os, StateChange x) 
+{
+	for (int i = 0; i < x.orbitChange.size(); i++)
+		os << x.orbitChange[i] << " ";
+	os << endl;
+	for (int i = 0; i < x.phaseChange.size(); i++)
+		os << x.phaseChange[i] << " ";
+	return os;
+}

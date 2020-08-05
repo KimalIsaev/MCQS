@@ -103,7 +103,7 @@ vector<int> GenereteZeroVector(int n)
 	return vec;
 }
 
-
+/*
 vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
 							     vector<vector<int>> phase){
 	
@@ -118,11 +118,13 @@ vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>>
 							     vector<int> phase){
 	
 }
+*/
+
 
 int main(){//example
 	vector<vector<int>> onesMatrixVector = GenereteOneMatrixVector(5);
 	vector<int> zeroVector = GenereteZeroVector(3);
-	/*viennamath::variable one(0);
+	viennamath::variable one(0);
 	viennamath::variable lambda(1);// создаю интенсивность потока
 	viennamath::variable sigma(2);// интенсивность орбиты 
 	vector<viennamath::variable*> q(2); //вероятность перехода на одну из фаз
@@ -138,12 +140,12 @@ int main(){//example
 	orbitZero[0] = 0;
 	vector<int> zeroZero(2); //создаю вектор [0,0] для перехода приборов
 	for (int i = 0; i<2; i++) zeroZero[i] = 0;
-	vector<vector<int>> onesMatrixVector(2);//[0,1]
-	//vector<int> zeroOne(2);//[1,0]
-	//oneZero[0] = 1;
-	//oneZero[1] = 0;
-	//zeroOne[0] = 0;
-	//zeroOne[1] = 1;
+	vector<int> oneZero(2);;//[0,1]
+	vector<int> zeroOne(2);//[1,0]
+	oneZero[0] = 1;
+	oneZero[1] = 0;
+	zeroOne[0] = 0;
+	zeroOne[1] = 1;
 	StateChange orbitChange(orbitMinus, zeroZero);
 	StateChange mainFlowChange(orbitZero, zeroZero);
 	StateChange zeroPhaseChange(orbitZero, oneZero);
@@ -159,11 +161,26 @@ int main(){//example
 			incomingFlow,
 			fullPhaseChange,
 			q, &one);
+		for (int i = 0; i < 6; i++)
+		{
+			cout << startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction[boost::vertex(i, 
+				startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction)] << endl;
+		}
+
+		typedef boost::property_map<MCQSGraph, boost::edge_weight_t>::type WeightMap;
+
+		WeightMap weights = boost::get(boost::edge_weight_t(), startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction);
+
+		for (MCQSGraph::edge_descriptor edge : 
+				boost::make_iterator_range(boost::edges(startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction))) {
+			std::cout << boost::get(weights, edge) << " " << edge << "   ";
+		}
 	}
 	catch (const std::invalid_argument& e)
 	{
 		std::cout << e.what() << std::endl;
-	}*/
+	}
 	//создал граф
+
 	return 0;
 }

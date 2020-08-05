@@ -17,5 +17,6 @@ public:
 	bool getExistance();
 	StateChange& operator=(const StateChange&);
 	~StateChange() {};
+	friend std::ostream& operator<<(std::ostream&, StateChange);
 };
 

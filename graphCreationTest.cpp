@@ -104,6 +104,20 @@ vector<int> GenereteZeroVector(int n)
 }
 
 
+vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
+							     vector<vector<int>> phase){
+	
+}
+
+vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<int> orbit,
+							     vector<vector<int>> phase){
+	
+}
+
+vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
+							     vector<int> phase){
+	
+}
 
 int main(){//example
 	vector<vector<int>> onesMatrixVector = GenereteOneMatrixVector(5);

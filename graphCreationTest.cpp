@@ -5,10 +5,9 @@
 #include "boost/graph/copy.hpp"
 #include "boost/foreach.hpp"
 #include "boost/tuple/tuple.hpp"
-#include "boost/range/combine.hpp"
 #include "viennamath/expression.hpp"
 
-#include "StateChange.h"
+#include "state_change.h"
 
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
 			      boost::bidirectionalS, StateChange,
@@ -16,15 +15,14 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS,
 typedef boost::graph_traits<MCQSGraph>::vertex_descriptor MCQSVertex_descriptor;
 
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-createIncomeGraph(const std::vector<StateChange> &vertexValue, 
-		  const std::vector<viennamath::variable*> &edgeValue){
-	if (vertexValue.size() == edgeValue.size()){
-		MCQSGraph resultGraph;
-		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
-		for(boost::tuple<StateChange&, viennamath::variable*> v: boost::combine(vertexValue, edgeValue))
-		{
-				MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
-				boost::add_edge(temp_vertex, mainVertex, v.get<1>(), resultGraph); 
+CreateIncomeGraph(const std::vector<StateChange> &vertex_value, 
+		  const std::vector<viennamath::variable*> &edge_value){
+	if (vertex_value.size() == edge_value.size()){
+		MCQSGraph result_graph;
+		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
+	        BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
+			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
+			boost::add_edge(temp_vertex, mainVertex, v.get<1>(), resultGraph); 
 		}
 		return std::make_pair(resultGraph, mainVertex);
 	}
@@ -34,12 +32,12 @@ createIncomeGraph(const std::vector<StateChange> &vertexValue,
 }
 
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-createOutcomeGraph( std::vector<StateChange> &vertexValue, std::vector<viennamath::variable*> &edgeValue){
+createOutcomeGraph(const std::vector<StateChange> &vertexValue, 
+		   const std::vector<viennamath::variable*> &edgeValue){
 	if (vertexValue.size() == edgeValue.size()){
 		MCQSGraph resultGraph;
 		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
-		for (boost::tuple<StateChange&, viennamath::variable*> v : boost::combine(vertexValue, edgeValue))
-		{
+		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
 			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
 			boost::add_edge(mainVertex, temp_vertex, v.get<1>(), resultGraph); 
 		}
@@ -65,10 +63,9 @@ MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCQSVertex_descriptor connectFr
 }
 
 MCQSGraph createExecutionGraph(viennamath::variable *orbitChance,
-		viennamath::variable *exitChance,
-		viennamath::variable *againChance,
-		std::pair<MCQSGraph, MCQSVertex_descriptor> phaseGraph,
-		viennamath::variable* connectionWithPhaseValue){
+			       viennamath::variable *exitChance,
+			       viennamath::variable *againChance,
+			       std::pair<MCQSGraph, MCQSVertex_descriptor>> phaseGraph){
 	MCQSGraph tempGraph;
 	StateChange onlyOrbitChange;
 	vector<int> orbitChange = {+1};
@@ -77,11 +74,11 @@ MCQSGraph createExecutionGraph(viennamath::variable *orbitChance,
 		orbitVertex = boost::add_vertex(tempGraph, onlyOrbitChange),
 		exitVertex = boost::add_vertex(tempGraph),
 		againVertex = boost::add_vertex(tempGraph);
-	boost::add_edge(mainVertex, orbitVertex, &orbitChance, tempGraph);
-	boost::add_edge(mainVertex, exitVertex, &exitChance, tempGraph);
-	boost::add_edge(mainVertex, againVertex, &againChance, tempGraph); 
+	boost::add_edge(mainVertex, orbitVertex, orbitChance, resultGraph);
+	boost::add_edge(mainVertex, exitVertex, exitChance, resultGraph);
+	boost::add_edge(mainVertex, againVertex, againChance, resultGraph); 
 	return connectTwoGraphsWithEdge(tempGraph, againVertex,
-					phaseGraph.first, phaseGraph.second, connectionWithPhaseValue);
+					phaseGraph.first, phaseGraph.second);
 }
 
 
@@ -119,30 +116,22 @@ vector<int> GenereteZeroVector(int n)
 	return vec;
 }
 
-
-
+/*
 vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
-	vector<vector<int>> phase) {
-	int n = phase.size();
-	if (orbit.size() > phase.size())
-		n = orbit.size();
-	vector<StateChange> vectorStateChange(n);
-	for (int i = 0; i < orbit.size() && i < phase.size(); i++) {
-		StateChange st(orbit[i], phase[i]);
-	}
-
-
+							     vector<vector<int>> phase){
+	
 }
 
 vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<int> orbit,
-	vector<vector<int>> phase) {
-
+							     vector<vector<int>> phase){
+	
 }
 
 vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
-	vector<int> phase) {
-
+							     vector<int> phase){
+	
 }
+*/
 
 
 int main(){//example
@@ -185,21 +174,20 @@ int main(){//example
 			incomingFlow,
 			fullPhaseChange,
 			q, &one);
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; i++)
 		{
-			cout << startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction[boost::vertex(i, 
-				startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction)] << endl;
+			cout << startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction[boost::vertex(i, 
+				startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction)] << endl;
 		}
-
-		MCQSGraph::edge_iterator it, end;
-		boost::tie(it, end) = boost::edges(startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction);
-
-		cout << endl;
-		cout << "rebra:  ";
-		for (int i = 0; i < 5; i++)
-			cout << *startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction[*it++] << " ";
-
-
+
+		typedef boost::property_map<MCQSGraph, boost::edge_weight_t>::type WeightMap;
+
+		WeightMap weights = boost::get(boost::edge_weight_t(), startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction);
+
+		for (MCQSGraph::edge_descriptor edge : 
+				boost::make_iterator_range(boost::edges(startGraph_OneFlow_OneOrbit_TwoPhase_WithExuction))) {
+			std::cout << boost::get(weights, edge) << " " << edge << "   ";
+		}
 	}
 	catch (const std::invalid_argument& e)
 	{

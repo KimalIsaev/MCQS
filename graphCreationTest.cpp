@@ -1,11 +1,12 @@
+#include <vector>
+#include <utility>
+
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/copy.hpp>
+#include <viennamath/expression.hpp>
 
 #include "StateChange.h"
 
-#include <vector>
-#include <utility>
-#include <boost/graph/copy.hpp>
-#include <viennamath/expression.hpp>
-#include <boost/graph/adjacency_list.hpp>
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
 			      boost::bidirectionalS, StateChange,
 			      viennamath::variable*> MCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь

@@ -69,6 +69,27 @@ MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCQSVertex_descriptor connectFr
 	return resultGraph;
 }
 
+MCQSGraph createExecutionGraph(viennamath::variable *orbitChance,
+			       viennamath::variable *exitChance,
+			       viennamath::variable *againChance,
+			       std::pair<MCQSGraph, MCQSVertex_descriptor>> phaseGraph){
+	MCQSGraph tempGraph;
+	StateChange onlyOrbitChange;
+	vector<int> orbitChange(1);
+	orbitChange[0] = 1;
+	onlyOrbitChange.setOrbitChange(orbitChange);
+	MCQSVertex_descriptor mainVertex = boost::add_vertex(tempGraph),
+		orbitVertex = boost::add_vertex(tempGraph, onlyOrbitChange),
+		exitVertex = boost::add_vertex(tempGraph),
+		againVertex = boost::add_vertex(tempGraph);
+	boost::add_edge(mainVertex, orbitVertex, orbitChance, resultGraph);
+	boost::add_edge(mainVertex, exitVertex, exitChance, resultGraph);
+	boost::add_edge(mainVertex, againVertex, againChance, resultGraph); 
+	return connectTwoGraphsWithEdge(tempGraph, againVertex,
+					phaseGraph.first, phaseGraph.second);
+}
+
+
 MCQSGraph createBattery(vector<StateChange> &incomingVertexValueVector, 
 			vector<viennamath::variable*> &incomingEdgeValueVector,
 			vector<StateChange> &outcomingVertexValueVector, 

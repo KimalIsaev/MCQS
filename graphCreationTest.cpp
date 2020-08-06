@@ -1,27 +1,28 @@
 #include <vector>
 #include <utility>
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/copy.hpp>
-#include <viennamath/expression.hpp>
+#include "boost/graph/adjacency_list.hpp"
+#include "boost/graph/copy.hpp"
+#include "boost/foreach.hpp"
+#include "boost/tuple/tuple.hpp"
+#include "viennamath/expression.hpp"
 
 #include "StateChange.h"
 
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
 			      boost::bidirectionalS, StateChange,
-			      viennamath::variable*> MCQSGraph;//тут могут возьникнут различные ошибки как-нибудь исправь
+			      viennamath::variable*> MCQSGraph;
 typedef boost::graph_traits<MCQSGraph>::vertex_descriptor MCQSVertex_descriptor;
 
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-createIncomeGraph(vector<StateChange> &incomingVertexValueVector, 
-		  vector<viennamath::variable*> &incomingEdgeValueVector){
-	if (incomingVertexValueVector.size() == incomingEdgeValueVector.size()){
+createIncomeGraph(const std::vector<StateChange> &vertexValue, 
+		  const std::vector<viennamath::variable*> &edgeValue){
+	if (vertexValue.size() == edgeValue.size()){
 		MCQSGraph resultGraph;
-	    MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
-		for (int i=0; i<incomingVertexValueVector.size(); i++){
-			MCQSVertex_descriptor temp_vertex = boost::add_vertex(incomingVertexValueVector[i], resultGraph);
-			//resultGraph[temp_vertex] = incomingVertexValueVector[i];//переопредели оператор равно
-			boost::add_edge(temp_vertex, mainVertex, incomingEdgeValueVector[i], resultGraph); 
+		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
+	        BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
+			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
+			boost::add_edge(temp_vertex, mainVertex, v.get<1>(), resultGraph); 
 		}
 		return std::make_pair(resultGraph, mainVertex);
 	}
@@ -31,14 +32,14 @@ createIncomeGraph(vector<StateChange> &incomingVertexValueVector,
 }
 
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector, 
-		   vector<viennamath::variable*> &outcomingEdgeValueVector){
-	if (outcomingVertexValueVector.size() == outcomingEdgeValueVector.size()){
+createOutcomeGraph(const std::vector<StateChange> &vertexValue, 
+		   const std::vector<viennamath::variable*> &edgeValue){
+	if (vertexValue.size() == edgeValue.size()){
 		MCQSGraph resultGraph;
 		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
-		for (int i=0; i<outcomingVertexValueVector.size(); i++){
-			MCQSVertex_descriptor temp_vertex = boost::add_vertex(outcomingVertexValueVector[i], resultGraph);
-			boost::add_edge(mainVertex, temp_vertex, outcomingEdgeValueVector[i], resultGraph); 
+		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
+			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
+			boost::add_edge(mainVertex, temp_vertex, v.get<1>(), resultGraph); 
 		}
 		return std::make_pair(resultGraph, mainVertex);
 	} else {
@@ -48,15 +49,6 @@ createOutcomeGraph(vector<StateChange> &outcomingVertexValueVector,
 
 MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCQSVertex_descriptor connectFrom,
 				   MCQSGraph &j, MCQSVertex_descriptor connectTo, viennamath::variable *edgeValue){
-	//https://stackoverflow.com/questions/18162187/merging-graphs-using-boost-graph
-	//всё сделано на основе этой ссылки, без понятия работает это или нет
-	typedef boost::property_map<MCQSGraph, boost::vertex_index_t>::type index_map_t;
-	//typedef boost::iterator_property_map<typename std::vector<MCQSVertex_descriptor>::iterator,
-	//				     index_map_t, MCQSVertex_descriptor, MCQSVertex_descriptor&> IsoMap;
-	//vector<MCQSVertex_descriptor> orig2copy_data_of_g(boost::num_vertices(g));
-	//vector<MCQSVertex_descriptor> orig2copy_data_of_j(boost::num_vertices(j));
-	//IsoMap mapG/* = make_iterator_property_map*/(orig2copy_data_of_g.begin());//, get(boost::vertex_index, g));
-	//IsoMap mapJ/* = make_iterator_property_map*/(orig2copy_data_of_j.begin());//, get(boost::vertex_index, j));
 	typedef std::map<MCQSVertex_descriptor, MCQSVertex_descriptor> MCQSVertex_map;
 	MCQSVertex_map vertexMapG, vertexMapJ;
 	boost::associative_property_map<MCQSVertex_map> mapG(vertexMapG);
@@ -76,8 +68,7 @@ MCQSGraph createExecutionGraph(viennamath::variable *orbitChance,
 			       std::pair<MCQSGraph, MCQSVertex_descriptor>> phaseGraph){
 	MCQSGraph tempGraph;
 	StateChange onlyOrbitChange;
-	vector<int> orbitChange(1);
-	orbitChange[0] = 1;
+	vector<int> orbitChange = {+1};
 	onlyOrbitChange.setOrbitChange(orbitChange);
 	MCQSVertex_descriptor mainVertex = boost::add_vertex(tempGraph),
 		orbitVertex = boost::add_vertex(tempGraph, onlyOrbitChange),

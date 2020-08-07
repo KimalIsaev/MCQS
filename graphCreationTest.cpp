@@ -63,7 +63,9 @@ CreateOutcomeGraph(const std::vector<StateChange> &vertex_value,
 //Потому что у буста нет функция слияния вершин - отвечу я вам.
 //и кину пруф: https://stackoverflow.com/questions/17762482/boost-graph-how-to-merge-two-vertices-contract-edge
 //и своё issue, что я открыл: https://github.com/boostorg/graph/issues/224
-//как только кто-нибудь напишет функцию слияния вершин, я перепишу и эту.
+//и письмо 2001 на имэйл, где говорится о той же самой проблеме https://lists.boost.org/Archives/boost/2001/05/11517.php 
+//как только кто-нибудь напишет функцию слияния вершин, я перепишу и эту
+//а до тех пор 3 мая для меня будет праздником нерешённых проблем 
 MCQSGraph CreatePompon(const vector<StateChange> &incoming_vertex_value, 
 		       const vector<viennamath::variable*> &incoming_edge_value,
 		       const vector<StateChange> &outcoming_vertex_value, 

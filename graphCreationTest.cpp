@@ -24,7 +24,7 @@ CreatePompon(const vector<StateChange> &incoming_vertex_value,
 	     const vector<viennamath::variable*> &incoming_edge_value,
 	     const vector<StateChange> &outcoming_vertex_value, 
 	     const vector<viennamath::variable*> &outcoming_edge_value){
-	if ((incoming_vertex_value.size() == incoming_edge_value.size()) && (outcoming_vertex_value.size() == outcoming_edge_value.size())){
+	if ((incoming_vertex_value.size() == incoming_edge_value.size()) && (outcoming_vertex_value.size() == outcoming_edge_value.size())) {
 		MCQSGraph result_graph;
 		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
 	        MCQSVertex_descriptor temp_vertex;
@@ -136,7 +136,7 @@ int main(){//example
 	for (int i = 0; i<2; i++)
 		q[i] = new viennamath::variable(3+i);
 	vector<viennamath::variable*> incomingFlow(2); // забиваю интенсивность потоков в вектор
-    incomingFlow[0] = &lambda; //что бы можно было передать в рёбра графа
+	incomingFlow[0] = &lambda; //что бы можно было передать в рёбра графа
 	incomingFlow[1] = &sigma;
 	vector<StateChange> incomingStateChange(2);//создаю вектор изменения состояний, который потом передам в вершины графа
 	vector<int> orbitMinus(1);// создаю вектор [-1] состоящий из одного элемента, так как орбита одна

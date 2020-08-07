@@ -14,62 +14,16 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS,
 			      viennamath::variable*> MCQSGraph;
 typedef boost::graph_traits<MCQSGraph>::vertex_descriptor MCQSVertex_descriptor;
 
-//Создаёт ориентированный полный двудольный граф (n,1)
-//выдаёт сам граф единственную вершину без выходящих рёбер(основную вершину в данном графе)
-//основная вершина имеет пустой StateChange
+//Помпон - это ориентированный звёздочный граф степени (n+m)
+//в котором n входящих в центральную вершину рёбер
+//и m исходящих
+//эта функция выдаёт сам помпон и его центральную вершину
 //для любого i, i-ое свойство ребра будет присвоено ребру которое выходит из вершины с i-ым свойством вершины
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-CreateIncomeGraph(const std::vector<StateChange> &vertex_value, 
-		  const std::vector<viennamath::variable*> &edge_value){
-	if (vertex_value.size() == edge_value.size()){//проверка соответствия размеров массивов, оба должны быть размером n
-		MCQSGraph result_graph;
-		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
-		MCQSVertex_descriptor temp_vertex;
-	        BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertex_value, edge_value)){
-			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
-			boost::add_edge(temp_vertex, main_vertex, v.get<1>(), result_graph); 
-		}
-		return std::make_pair(result_graph, main_vertex);
-	}
-	else {
-		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
-	}									
-}
-
-
-//Создаёт ориентированный полный двудольный граф (1,n)
-//выдаёт сам граф единственную вершину без входящих рёбер(основную вершину в данном графе)
-//основная вершина имеет пустой StateChange
-//для любого i, i-ое свойство ребра будет присвоено ребру которое входит в вершину с i-ым свойством вершины
-std::pair<MCQSGraph, MCQSVertex_descriptor>
-CreateOutcomeGraph(const std::vector<StateChange> &vertex_value, 
-		   const std::vector<viennamath::variable*> &edge_value){
-	if (vertex_value.size() == edge_value.size()){//проверка соответствия размеров массивов, оба должны быть размером n
-		MCQSGraph result_graph;
-		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
-		MCQSVertex_descriptor temp_vertex;
-		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertex_value, edge_value)){
-			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
-			boost::add_edge(main_vertex, temp_vertex, v.get<1>(), result_graph); 
-		}
-		return std::make_pair(result_graph, main_vertex);
-	} else {
-		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
-	}									
-}
-
-//Помпон это входящий и выходящий граф вместе у каждого из которых основная вершина соеденина в одну
-//Почему не сделать входящи и выходящий граф по отдельности, а потом у них объединить вершину? - Спросите вы меня
-//Потому что у буста нет функция слияния вершин - отвечу я вам.
-//и кину пруф: https://stackoverflow.com/questions/17762482/boost-graph-how-to-merge-two-vertices-contract-edge
-//и своё issue, что я открыл: https://github.com/boostorg/graph/issues/224
-//и письмо 2001 на имэйл, где говорится о той же самой проблеме https://lists.boost.org/Archives/boost/2001/05/11517.php 
-//как только кто-нибудь напишет функцию слияния вершин, я перепишу и эту
-//а до тех пор 3 мая для меня будет праздником нерешённых проблем 
-MCQSGraph CreatePompon(const vector<StateChange> &incoming_vertex_value, 
-		       const vector<viennamath::variable*> &incoming_edge_value,
-		       const vector<StateChange> &outcoming_vertex_value, 
-		       const vector<viennamath::variable*> &outcoming_edge_value){
+CreatePompon(const vector<StateChange> &incoming_vertex_value, 
+	     const vector<viennamath::variable*> &incoming_edge_value,
+	     const vector<StateChange> &outcoming_vertex_value, 
+	     const vector<viennamath::variable*> &outcoming_edge_value){
 	if ((incoming_vertex_value.size() == incoming_edge_value.size()) && (outcoming_vertex_value.size() == outcoming_edge_value.size())){
 		MCQSGraph result_graph;
 		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
@@ -82,7 +36,7 @@ MCQSGraph CreatePompon(const vector<StateChange> &incoming_vertex_value,
 			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
 			boost::add_edge(main_ertex, temp_vertex, v.get<1>(), result_graph); 
 		}
-		return result_graph;
+		return std::make_pair(result_graph, main_vertex);
 	} else {
 		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
 	}

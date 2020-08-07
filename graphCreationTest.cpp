@@ -14,84 +14,120 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS,
 			      viennamath::variable*> MCQSGraph;
 typedef boost::graph_traits<MCQSGraph>::vertex_descriptor MCQSVertex_descriptor;
 
+//Создаёт ориентированный полный двудольный граф (n,1)
+//выдаёт сам граф единственную вершину без выходящих рёбер(основную вершину в данном графе)
+//основная вершина имеет пустой StateChange
+//для любого i, i-ое свойство ребра будет присвоено ребру которое выходит из вершины с i-ым свойством вершины
 std::pair<MCQSGraph, MCQSVertex_descriptor>
 CreateIncomeGraph(const std::vector<StateChange> &vertex_value, 
 		  const std::vector<viennamath::variable*> &edge_value){
-	if (vertex_value.size() == edge_value.size()){
+	if (vertex_value.size() == edge_value.size()){//проверка соответствия размеров массивов, оба должны быть размером n
 		MCQSGraph result_graph;
 		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
-	        BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
-			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
-			boost::add_edge(temp_vertex, mainVertex, v.get<1>(), resultGraph); 
+		MCQSVertex_descriptor temp_vertex;
+	        BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertex_value, edge_value)){
+			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
+			boost::add_edge(temp_vertex, main_vertex, v.get<1>(), result_graph); 
 		}
-		return std::make_pair(resultGraph, mainVertex);
+		return std::make_pair(result_graph, main_vertex);
 	}
 	else {
 		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
 	}									
 }
 
+
+//Создаёт ориентированный полный двудольный граф (1,n)
+//выдаёт сам граф единственную вершину без входящих рёбер(основную вершину в данном графе)
+//основная вершина имеет пустой StateChange
+//для любого i, i-ое свойство ребра будет присвоено ребру которое входит в вершину с i-ым свойством вершины
 std::pair<MCQSGraph, MCQSVertex_descriptor>
-createOutcomeGraph(const std::vector<StateChange> &vertexValue, 
-		   const std::vector<viennamath::variable*> &edgeValue){
-	if (vertexValue.size() == edgeValue.size()){
-		MCQSGraph resultGraph;
-		MCQSVertex_descriptor mainVertex = boost::add_vertex(resultGraph);
-		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertexValue, edgeValue)){
-			MCQSVertex_descriptor temp_vertex = boost::add_vertex(v.get<0>(), resultGraph);
-			boost::add_edge(mainVertex, temp_vertex, v.get<1>(), resultGraph); 
+CreateOutcomeGraph(const std::vector<StateChange> &vertex_value, 
+		   const std::vector<viennamath::variable*> &edge_value){
+	if (vertex_value.size() == edge_value.size()){//проверка соответствия размеров массивов, оба должны быть размером n
+		MCQSGraph result_graph;
+		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
+		MCQSVertex_descriptor temp_vertex;
+		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(vertex_value, edge_value)){
+			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
+			boost::add_edge(main_vertex, temp_vertex, v.get<1>(), result_graph); 
 		}
-		return std::make_pair(resultGraph, mainVertex);
+		return std::make_pair(result_graph, main_vertex);
 	} else {
 		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
 	}									
 }
 
-MCQSGraph connectTwoGraphsWithEdge(MCQSGraph &g, MCQSVertex_descriptor connectFrom,
-				   MCQSGraph &j, MCQSVertex_descriptor connectTo, viennamath::variable *edgeValue){
-	typedef std::map<MCQSVertex_descriptor, MCQSVertex_descriptor> MCQSVertex_map;
-	MCQSVertex_map vertexMapG, vertexMapJ;
-	boost::associative_property_map<MCQSVertex_map> mapG(vertexMapG);
-	boost::associative_property_map<MCQSVertex_map> mapJ(vertexMapJ);
-	MCQSGraph resultGraph;
-	boost::copy_graph(g, resultGraph, boost::orig_to_copy(mapG));
-	boost::copy_graph(j, resultGraph, boost::orig_to_copy(mapJ));
-	MCQSVertex_descriptor fromG = mapG[connectFrom];
-	MCQSVertex_descriptor toJ = mapJ[connectTo];
-	boost::add_edge(fromG, toJ, edgeValue, resultGraph);//единица вместа переменной в качестве веса на ребре
-	return resultGraph;
-}
-
-MCQSGraph createExecutionGraph(viennamath::variable *orbitChance,
-			       viennamath::variable *exitChance,
-			       viennamath::variable *againChance,
-			       std::pair<MCQSGraph, MCQSVertex_descriptor>> phaseGraph){
-	MCQSGraph tempGraph;
-	StateChange onlyOrbitChange;
-	vector<int> orbitChange = {+1};
-	onlyOrbitChange.setOrbitChange(orbitChange);
-	MCQSVertex_descriptor mainVertex = boost::add_vertex(tempGraph),
-		orbitVertex = boost::add_vertex(tempGraph, onlyOrbitChange),
-		exitVertex = boost::add_vertex(tempGraph),
-		againVertex = boost::add_vertex(tempGraph);
-	boost::add_edge(mainVertex, orbitVertex, orbitChance, resultGraph);
-	boost::add_edge(mainVertex, exitVertex, exitChance, resultGraph);
-	boost::add_edge(mainVertex, againVertex, againChance, resultGraph); 
-	return connectTwoGraphsWithEdge(tempGraph, againVertex,
-					phaseGraph.first, phaseGraph.second);
+//Помпон это входящий и выходящий граф вместе у каждого из которых основная вершина соеденина в одну
+//Почему не сделать входящи и выходящий граф по отдельности, а потом у них объединить вершину? - Спросите вы меня
+//Потому что у буста нет функция слияния вершин - отвечу я вам.
+//и кину пруф: https://stackoverflow.com/questions/17762482/boost-graph-how-to-merge-two-vertices-contract-edge
+//и своё issue, что я открыл: https://github.com/boostorg/graph/issues/224
+//как только кто-нибудь напишет функцию слияния вершин, я перепишу и эту.
+MCQSGraph CreatePompon(const vector<StateChange> &incoming_vertex_value, 
+		       const vector<viennamath::variable*> &incoming_edge_value,
+		       const vector<StateChange> &outcoming_vertex_value, 
+		       const vector<viennamath::variable*> &outcoming_edge_value){
+	if ((incoming_vertex_value.size() == incoming_edge_value.size()) && (outcoming_vertex_value.size() == outcoming_edge_value.size())){
+		MCQSGraph result_graph;
+		MCQSVertex_descriptor main_vertex = boost::add_vertex(result_graph);
+	        MCQSVertex_descriptor temp_vertex;
+		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(incoming_vertex_value, incoming_edge_value)){
+			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
+			boost::add_edge(temp_vertex, main_vertex, v.get<1>(), result_graph); 
+		}
+		BOOST_FOREACH(boost::tuple<StateChange&, viennamath::variable*> v, boost::combine(outcoming_vertex_value, outcoming_edge_value)){
+			temp_vertex = boost::add_vertex(v.get<0>(), result_graph);
+			boost::add_edge(main_ertex, temp_vertex, v.get<1>(), result_graph); 
+		}
+		return result_graph;
+	} else {
+		throw std::invalid_argument("different sizes of edge and vertex value vectors");;
+	}
 }
 
 
-MCQSGraph createBattery(vector<StateChange> &incomingVertexValueVector, 
-			vector<viennamath::variable*> &incomingEdgeValueVector,
-			vector<StateChange> &outcomingVertexValueVector, 
-			vector<viennamath::variable*> &outcomingEdgeValueVector, viennamath::variable *edgeValue){
-		std::pair<MCQSGraph, MCQSVertex_descriptor> incomeGraph = createIncomeGraph(incomingVertexValueVector,
-			incomingEdgeValueVector);
-		std::pair<MCQSGraph, MCQSVertex_descriptor> outcomeGraph = createIncomeGraph(outcomingVertexValueVector,
-			outcomingEdgeValueVector);
-	return connectTwoGraphsWithEdge(incomeGraph.first, incomeGraph.second, outcomeGraph.first, outcomeGraph.second, edgeValue);
+//Соединяет два графа между собой ребром со значением заданной переменной
+//Выдаёт новый граф, не изменяя данные ему
+MCQSGraph ConnectTwoGraphsWithEdge(const MCQSGraph &g, const MCQSVertex_descriptor connect_from,
+				   const MCQSGraph &j, const MCQSVertex_descriptor connect_to,
+				   const viennamath::variable *edge_value){
+	typedef std::map<MCQSVertex_descriptor, MCQSVertex_descriptor> MCQSVertex_map;//этот тип позволяет сделать соответствие 
+	MCQSVertex_map vertex_map_g, vertex_map_j; //из номера вершины в старом графе в номеро вершины в новом графе
+	boost::associative_property_map<MCQSVertex_map> map_g(vertex_map_g);//инициализация
+	boost::associative_property_map<MCQSVertex_map> map_j(vertex_map_j);//инициализация
+	MCQSGraph result_graph;
+	boost::copy_graph(g, result_graph, boost::orig_to_copy(map_g));//копирование графа
+	boost::copy_graph(j, result_graph, boost::orig_to_copy(map_j));//с запонимаем под каким новым номером существует старая вершина 
+	MCQSVertex_descriptor from_g = map_g[connect_from];//смотрим номер вершины от которой хотим провести ребро
+	MCQSVertex_descriptor to_j = map_j[connect_to];//смотрим номер вершины в которую хотим провести ребро
+	boost::add_edge(from_g, to_j, edge_value, result_graph);//создаём ребро
+	return result_graph;
 }
+
+//выдаёт граф, который используется после окончания работы прибора
+MCQSGraph CreateExecutionGraph(const viennamath::variable *orbit_chance,
+			       const viennamath::variable *exit_chance,
+			       const viennamath::variable *connection_to_phase_graph,
+			       const std::pair<MCQSGraph, MCQSVertex_descriptor>> phase_graph){
+	MCQSGraph temp_graph;
+	vector<int> orbit_change = {+1};//временная мера, потом придумаем какой размер должен быть тут
+	StateChange only_orbit_change = StateChange::StateChangeWithOrbit(orbit_change);
+	MCQSVertex_descriptor main_vertex = boost::add_vertex(temp_graph),
+		orbit_vertex = boost::add_vertex(temp_graph, only_orbit_change),
+		exit_vertex = boost::add_vertex(temp_graph);
+	boost::add_edge(main_vertex, orbit_vertex, orbit_chance, result_graph);
+	boost::add_edge(main_vertex, exit_vertex, exit_chance, result_graph); 
+	return connectTwoGraphsWithEdge(temp_graph, again_vertex,
+					phase_graph.first, phase_graph.second,
+					connection_to_phase_graph);
+}
+/*
+template<T>
+inline bool CheckIfVectorHaveSameSize(vector<T> v1, vector<T> v2){
+	return v1.size() == v2.size();
+}
+*/
 
 vector<vector<int>> GenereteOneMatrixVector(int n)
 {

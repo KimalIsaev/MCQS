@@ -7,8 +7,8 @@
 class StateChange
 {
 private:
-	vector<int> orbit_change_;
-	vector<int> phase_change_;
+	std::vector<int> orbit_change_;
+	std::vector<int> phase_change_;
 public:
 	StateChange() {};
 	StateChange(const StateChange&);
@@ -17,7 +17,7 @@ public:
 	StateChange& operator=(const StateChange&);
 	~StateChange() {};
 	friend std::ostream& operator<<(std::ostream&, const StateChange);
-	static StateChange StateChangeWithOrbit(const vector<int>); //напиши, пожалуйста эти две
-	static StateChange StateChangeWithPhase(const vector<int>);
+	static StateChange StateChangeWithOrbit(const std::vector<int>); //напиши, пожалуйста эти две
+	static StateChange StateChangeWithPhase(const std::vector<int>);
 };
 #endif

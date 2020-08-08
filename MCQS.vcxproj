@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,11 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="graphCreationTest.cpp" />
-    <ClCompile Include="StateChange.cpp" />
+    <ClCompile Include="graph_creation_test2.cpp" />
+    <ClCompile Include="state_change.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StateChange.h" />
+    <ClInclude Include="graph_utilities.h" />
+    <ClInclude Include="state_change.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

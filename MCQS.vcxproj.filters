@@ -18,7 +18,7 @@
     <ClCompile Include="state_change.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graph_creation_test2.cpp">
+    <ClCompile Include="testforsomefunctions.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

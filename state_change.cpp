@@ -1,10 +1,11 @@
 #include "state_change.h"
 
-StateChange::StateChange(const std::span<int> orbit, const std::span<int> phase)
+StateChange::StateChange(const std::vector<int> orbit, const std::vector<int> phase)
 {
 	orbit_change_ = orbit;
 	phase_change_ = phase;
 }
+
 
 StateChange::StateChange(const StateChange& orig)
 {
@@ -20,7 +21,7 @@ StateChange& StateChange::operator=(const StateChange &newStateChange)
 	return *this;
 }
 
-StateChange& StateChange::operator=(const StateChange& newStateChange)
+StateChange& StateChange::operator+(const StateChange& newStateChange)
 {
 	int thisSize = this->phase_change_.size();
 	int newSize = newStateChange.phase_change_.size();
@@ -43,7 +44,6 @@ StateChange& StateChange::operator=(const StateChange& newStateChange)
 
 	thisSize = this->orbit_change_.size();
 	newSize = newStateChange.orbit_change_.size();
-	StateChange resultStateChange;
 	if (!thisSize || !newSize)
 		if (!thisSize)
 			resultStateChange.orbit_change_ = newStateChange.orbit_change_;
@@ -66,22 +66,25 @@ StateChange& StateChange::operator=(const StateChange& newStateChange)
 
 std::ostream& operator<<(std::ostream& os, const StateChange x) 
 {
+	os << "orbits:" << std::endl;
 	for (int i = 0; i < x.orbit_change_.size(); i++)
 		os << x.orbit_change_[i] << " ";
 	os << std::endl;
+	os << "phase:" << std::endl;
 	for (int i = 0; i < x.phase_change_.size(); i++)
 		os << x.phase_change_[i] << " ";
+	os << std::endl;
 	return os;
 }
 
-StateChange StateChange::StateChangeWithOrbit(const std::span<int> new_orbit)
+StateChange StateChange::StateChangeWithOrbit(const std::vector<int> new_orbit)
 {
 	StateChange a;
 	a.orbit_change_ = new_orbit;
 	return a;
 }
 
-StateChange StateChange::StateChangeWithPhase(const std::span<int> new_phase)
+StateChange StateChange::StateChangeWithPhase(const std::vector<int> new_phase)
 {
 	StateChange a;
 	a.orbit_change_ = new_phase;

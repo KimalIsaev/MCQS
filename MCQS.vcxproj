@@ -143,8 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="graph_creation_test2.cpp" />
     <ClCompile Include="state_change.cpp" />
+    <ClCompile Include="testforsomefunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph_utilities.h" />

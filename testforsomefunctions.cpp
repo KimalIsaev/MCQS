@@ -1,6 +1,7 @@
-#include"state_change.h"
+
 #include <vector>
 #include <iostream>
+#include<map>
 using namespace std;
 
 
@@ -29,60 +30,32 @@ vector<int> GenereteZeroVector(size_t n)
 
 
 
-vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
-	vector<vector<int>> phase) {
-	int nPhase = phase.size();
-	int nOrbit = orbit.size();
-	int n;
-	if (nOrbit > nPhase)
-		n = nOrbit;
-	else
-		n = nPhase;
-	vector<StateChange> vectorStateChange(n);
-	int i;
-	for (i = 0; i < nOrbit && i < nPhase; i++) {
-		StateChange st(orbit[i], phase[i]);
-		vectorStateChange[i] = st;
+vector<map<int, vector<int>>> createState(int n, vector<vector<int>> vec) {
+	vector<map<int, vector<int>>> newState(vec.size());
+	for (int i = 0; i < vec.size(); i++)
+	{
+		map<int, vector<int>> mapState;
+		mapState[n] = vec[i];
+		newState[i] = mapState;
 	}
-	for (; i < nOrbit; i++) {
-		vectorStateChange[i] = StateChange::StateChangeWithOrbit(orbit[i]);
-	}
-	for (; i < nPhase; i++) {
-		vectorStateChange[i] = StateChange::StateChangeWithPhase(orbit[i]);
-	}
-	return vectorStateChange;
+	return newState;
 }
 
-vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<int> orbit,
-	vector<vector<int>> phase) {
-	int nPhase = phase.size();
-	vector<StateChange> vectorStateChange(nPhase);
-	for (int i = 0; i < nPhase; i++) {
-		StateChange st(orbit, phase[i]);
-		vectorStateChange[i] = st;
-	}
-	return vectorStateChange;
-}
-
-vector<StateChange> createStateChangeVectorFromOrbitAndPhase(vector<vector<int>> orbit,
-	vector<int> phase) {
-
-	int nOrbit = orbit.size();
-	vector<StateChange> vectorStateChange(nOrbit);
-	for (int i = 0; i < nOrbit; i++) {
-		StateChange st(orbit[i], phase);
-		vectorStateChange[i] = st;
-	}
-	return vectorStateChange;
-
-}
 
 int main()
 {
 	vector<int> phase = GenereteZeroVector(3);
 	vector<vector<int>> orbit = GenereteOneMatrixVector(3);
-	vector<StateChange> vec = createStateChangeVectorFromOrbitAndPhase(orbit, phase);
-	for (int i = 0; i < vec.size(); i++)
-		cout << vec[i];
+	vector<map<int, vector<int>>> vec = createState(2, orbit);
+	for (int i = 0; i < vec.size(); i++) {
+		cout << i << ":" << endl;
+		map<int, vector<int>> ::iterator it = vec[i].begin();
+		for (int j = 0; it != vec[i].end(); it++, j++) {  // выводим их
+			cout << j << ") Key " << it->first << ", value:  ";
+			for (int g = 0; g < it->second.size(); g++)
+				cout << it->second[g] << " ";
+		}
+		cout << endl;
+	}
 	return 0;
 }

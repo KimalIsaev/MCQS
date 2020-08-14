@@ -1,26 +1,23 @@
 #include "state_change.h"
 
-StateChange::StateChange(const std::vector<int> orbit, const std::vector<int> phase)
+StateChange::StateChange(std::map<int, std::map<int, int>> state)
 {
-	orbit_change_ = orbit;
-	phase_change_ = phase;
+	state_ = state;
 }
 
 
 StateChange::StateChange(const StateChange& orig)
 {
-	orbit_change_ = orig.orbit_change_;
-	phase_change_ = orig.phase_change_;
+	state_ = orig.state_;
 }
 
 
 StateChange& StateChange::operator=(const StateChange &newStateChange)
 {
-	orbit_change_ = newStateChange.orbit_change_;
-	phase_change_ = newStateChange.phase_change_;
+	state_ = newStateChange.state_;
 	return *this;
 }
-
+/*
 StateChange& StateChange::operator+(const StateChange& newStateChange)
 {
 	int thisSize = this->phase_change_.size();
@@ -62,21 +59,20 @@ StateChange& StateChange::operator+(const StateChange& newStateChange)
 
 	return resultStateChange;
 }
-
+*/
 
 std::ostream& operator<<(std::ostream& os, const StateChange x) 
 {
-	os << "orbits:" << std::endl;
-	for (int i = 0; i < x.orbit_change_.size(); i++)
-		os << x.orbit_change_[i] << " ";
-	os << std::endl;
-	os << "phase:" << std::endl;
-	for (int i = 0; i < x.phase_change_.size(); i++)
-		os << x.phase_change_[i] << " ";
-	os << std::endl;
+	for (auto iti = x.state_.begin(); iti != x.state_.end(); ++iti)
+	{
+		for (auto itj = iti->second.begin(); itj != iti->second.end(); ++itj)
+		{
+			std::cout << itj->second;
+		}
+	}
 	return os;
 }
-
+/*
 StateChange StateChange::StateChangeWithOrbit(const std::vector<int> new_orbit)
 {
 	StateChange a;
@@ -89,4 +85,4 @@ StateChange StateChange::StateChangeWithPhase(const std::vector<int> new_phase)
 	StateChange a;
 	a.orbit_change_ = new_phase;
 	return a;
-}
+}*/

@@ -143,12 +143,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="state_change.cpp" />
     <ClCompile Include="testforsomefunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph_utilities.h" />
-    <ClInclude Include="state_change.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

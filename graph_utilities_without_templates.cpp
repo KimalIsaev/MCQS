@@ -1,11 +1,12 @@
 #include "graph_utilities_without_templates.h"
 
 
+
 namespace mcqsgraphutils {
 	//Соединяет два графа между собой ребром со значением заданной переменной
 	//Выдаёт новый граф, не изменяя данные ему
-	
-	Graph ConnectTwoGraphsWithEdge(const MCQSGraph& g, const MCQSVertex_descriptor connect_from,
+	/*
+	MCQSGraph ConnectTwoGraphsWithEdge(const MCQSGraph& g, const MCQSVertex_descriptor connect_from,
 				       const MCQSGraph& j, const MCQSVertex_descriptor connect_to,
 				       const viennamath::variable* edge_value) {
 		typedef std::map<MCQSVertex_descriptor, MCQSVertex_descriptor> GraphVertexMap;//этот тип позволяет сделать соответствие 
@@ -20,7 +21,7 @@ namespace mcqsgraphutils {
 		boost::add_edge(from_g, to_j, edge_value, result_graph);//создаём ребро
 		return result_graph;
 	}
-
+	*/
 	
 	std::pair<MCQSGraph, MCQSVertex_descriptor>
 	CreatePompon(const vector<map<int, vector<int>>>& incoming_vertex_value,
@@ -48,15 +49,15 @@ namespace mcqsgraphutils {
 			throw std::invalid_argument("different sizes of edge and vertex value vectors");;
 		}
 	}
-
+	/*
 	void EndDepthFirstSearch(const MCQSGraph& g, const MCQSVertex_descriptor v,
 		std::list<MCQSVertex_descriptor>& all_vertecies_in_current_path,
 		std::vector<std::list<MCQSVertex_descriptor>>& all_path) {
 		std::pair<boost::graph_traits<MCQSGraph>::out_edge_iterator, boost::graph_traits<MCQSGraph>::out_edge_iterator>
-			pair_edge_iterator boost::out_edges(v, g);
+			pair_edge_iterator = boost::out_edges(v, g);
 		if (pair_edge_iterator.first != pair_edge_iterator.second) {
 			for (auto i = pair_edge_iterator.first; i != pair_edge_iterator.second; i++) {
-				all_vertecies_in_current_path.push_front(G[i]);
+				all_vertecies_in_current_path.push_front(g[i]);
 				EndDepthFirstSearch(g, i, all_vertecies_in_current_path, all_path);
 			}
 		}
@@ -64,8 +65,8 @@ namespace mcqsgraphutils {
 			all_path.push_back(all_vertecies_in_current_path);
 		}
 	}
-
-        std::vector<std::vector<std::list<MCQSVertex_descriptor>>> AllPath(const MSQSGraph& g) {
+	
+        std::vector<std::vector<std::list<MCQSVertex_descriptor>>> AllPath(const MCQSGraph& g) {
 		std::list<MCQSVertex_descriptor> verticies_to_start_from;
 		int number_of_end_verticies = 0;
 		for (int i = 0; i < boost::num_vertices(g); i++) {
@@ -85,7 +86,7 @@ namespace mcqsgraphutils {
 		}
 		return result_tensor;
 	}
-
+*/
 	/*позже допишу
 	std::vector<std::pair<viennamath::expr, std::map<int, std::vector<int>>>> AllPathToAllChanges(MCQSGraph g,
 												      std::vector<std::vector<std::list<MCQSVertex_descriptor>>> all_changes){
